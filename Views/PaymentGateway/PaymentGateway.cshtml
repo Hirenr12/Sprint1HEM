@@ -1,0 +1,34 @@
+﻿﻿@{
+    ViewData["Title"] = "Payment Gateway";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form method="post" action="@Url.Action("ProcessPayment", "Payment")">
+    <div class="form-group">
+        <label for="cardNumber">Card Number:</label>
+        <input type="text" id="cardNumber" name="cardNumber" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+        <label for="expiryDate">Expiry Date:</label>
+        <input type="text" id="expiryDate" name="expiryDate" class="form-control" placeholder="MM/YYYY" required>
+    </div>
+
+    <div class="form-group">
+        <label for="cvv">CVV:</label>
+        <input type="text" id="cvv" name="cvv" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+        <label for="cardHolderName">Cardholder Name:</label>
+        <input type="text" id="cardHolderName" name="cardHolderName" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+        <label for="amount">Amount:</label>
+        <input type="text" id="amount" name="amount" class="form-control" value="0.00" readonly>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Pay Now</button>
+</form>
