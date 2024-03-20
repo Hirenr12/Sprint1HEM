@@ -15,6 +15,8 @@ public partial class Customer
 
     public string Address { get; set; } = null!;
 
+    public int Manager { get; set; }
+
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
     public virtual ICollection<OrderList> OrderLists { get; set; } = new List<OrderList>();

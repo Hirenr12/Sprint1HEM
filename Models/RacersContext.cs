@@ -23,29 +23,15 @@ public partial class RacersContext : DbContext
 
     public virtual DbSet<OrderList> OrderLists { get; set; }
 
-      /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-  #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-          => optionsBuilder.UseSqlServer("Server=ETHAN_SWANEPOEL\\SQLEXPRESS;Database=Racers;Trusted_Connection=True;TrustServerCertificate=True;");*/
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (!optionsBuilder.IsConfigured)
-        {
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .Build();
-            var connectionString = configuration.GetConnectionString("Racers");
-            optionsBuilder.UseSqlServer(connectionString);
-        }
-    }
-
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Data Source=LAPTOP-JDGHM7O1;Initial Catalog=Racers; Encrypt=False; Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Cart>(entity =>
         {
-            entity.HasKey(e => e.CartId).HasName("PK__Cart__51BCD797A9776A65");
+            entity.HasKey(e => e.CartId).HasName("PK__Cart__51BCD797D9A0F2DC");
 
             entity.ToTable("Cart");
 
@@ -55,17 +41,17 @@ public partial class RacersContext : DbContext
             entity.HasOne(d => d.Customer).WithMany(p => p.Carts)
                 .HasForeignKey(d => d.CustomerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Cart__CustomerId__3B75D760");
+                .HasConstraintName("FK__Cart__CustomerId__4BAC3F29");
 
             entity.HasOne(d => d.Item).WithMany(p => p.Carts)
                 .HasForeignKey(d => d.ItemId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Cart__ItemId__3C69FB99");
+                .HasConstraintName("FK__Cart__ItemId__4CA06362");
         });
 
         modelBuilder.Entity<Customer>(entity =>
         {
-            entity.HasKey(e => e.CustomerId).HasName("PK__Customer__A4AE64D8F942AB8F");
+            entity.HasKey(e => e.CustomerId).HasName("PK__Customer__A4AE64D8A35F9717");
 
             entity.ToTable("Customer");
 
@@ -74,6 +60,7 @@ public partial class RacersContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.FullName).HasMaxLength(100);
+            entity.Property(e => e.Manager).HasColumnName("manager");
             entity.Property(e => e.Password)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -81,7 +68,7 @@ public partial class RacersContext : DbContext
 
         modelBuilder.Entity<Item>(entity =>
         {
-            entity.HasKey(e => e.ItemId).HasName("PK__Item__727E838BEB49576F");
+            entity.HasKey(e => e.ItemId).HasName("PK__Item__727E838B40FC3F06");
 
             entity.ToTable("Item");
 
@@ -96,7 +83,7 @@ public partial class RacersContext : DbContext
 
         modelBuilder.Entity<OrderList>(entity =>
         {
-            entity.HasKey(e => e.OrderId).HasName("PK__OrderLis__C3905BAF432B673C");
+            entity.HasKey(e => e.OrderId).HasName("PK__OrderLis__C3905BAF13E57B6C");
 
             entity.ToTable("OrderList");
 
@@ -105,11 +92,11 @@ public partial class RacersContext : DbContext
 
             entity.HasOne(d => d.Customer).WithMany(p => p.OrderLists)
                 .HasForeignKey(d => d.CustomerId)
-                .HasConstraintName("FK__OrderList__Custo__3F466844");
+                .HasConstraintName("FK__OrderList__Custo__4F7CD00D");
 
             entity.HasOne(d => d.Item).WithMany(p => p.OrderLists)
                 .HasForeignKey(d => d.ItemId)
-                .HasConstraintName("FK__OrderList__ItemI__403A8C7D");
+                .HasConstraintName("FK__OrderList__ItemI__5070F446");
         });
 
         OnModelCreatingPartial(modelBuilder);

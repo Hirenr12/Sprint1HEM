@@ -19,7 +19,7 @@ namespace Sprint1HEM.Controllers
         {
             _context = context;
         }
-        /*public sealed class LoginLogger
+        public sealed class LoginLogger
         {
             private static readonly LoginLogger instance = new LoginLogger();
             private static readonly object padlock = new object();
@@ -56,7 +56,7 @@ namespace Sprint1HEM.Controllers
                     }
                 }
             }
-        }*/
+        }
 
 
         /*[HttpGet]
@@ -78,40 +78,39 @@ namespace Sprint1HEM.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(Customer model)
         {
-            
-                // Retrieve the user from the database based on the provided username
-                var user = _context.Customers.SingleOrDefault(u => u.Email == model.Email);
+            // Retrieve the user from the database based on the provided username
+            var user = _context.Customers.SingleOrDefault(u => u.Email == model.Email);
 
-                if (user != null && !string.IsNullOrEmpty(model.Password))
+            if (user != null && !string.IsNullOrEmpty(model.Password))
+            {
+                // Hash the provided password for comparison with the hashed password stored in the database
+                using (SHA256 sha256Hash = SHA256.Create())
                 {
-                    // Hash the provided password for comparison with the hashed password stored in the database
-                    using (SHA256 sha256Hash = SHA256.Create())
+                    byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(model.Password));
+                    string hashedPassword = Convert.ToBase64String(bytes);
+
+                    // Check if the hashed password matches the one stored in the database
+                    if (user.Password == hashedPassword)
                     {
-                        byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(model.Password));
-                        string hashedPassword = Convert.ToBase64String(bytes);
-
-                        // Check if the hashed password matches the one stored in the database
-                        if (user.Password == hashedPassword)
-                        {
-                            // Authentication successful
-                            // You may want to set up proper authentication mechanisms here
-                            HttpContext.Response.Cookies.Append("Email", model.Email);
-
-                            // Redirect to another action or view upon successful login
-                            return RedirectToAction("Index", "Items");
-                        }   
+                        // Authentication successful
+                        // Store user information in session
+                        HttpContext.Session.SetString("UserEmail", user.Email.ToString());
+                       
+                        // Redirect to another action or view upon successful login
+                        return RedirectToAction("Index", "Items");
                     }
-                }  
-            
+                }
+            }
+
             // Invalid username or password, add a model error
             ModelState.AddModelError(string.Empty, "Invalid username or password");
 
-            //Pass error message to error view 
+            // Pass error message to error view
             TempData["ErrorMessage"] = "Invalid username or password";
 
             return View();
-
         }
+
 
         // GET: Customers/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -154,13 +153,14 @@ namespace Sprint1HEM.Controllers
                     byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(customer.Password));
                     customer.Password = Convert.ToBase64String(bytes);
                 }
-
+                customer.Manager = 0;
                 _context.Add(customer);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Login));
             }
             return View(customer);
         }
+       
         // GET: Customers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
