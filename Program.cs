@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<RacersContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Race")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("RacerDb")));
 
 // Add session services
 builder.Services.AddSession(options =>
